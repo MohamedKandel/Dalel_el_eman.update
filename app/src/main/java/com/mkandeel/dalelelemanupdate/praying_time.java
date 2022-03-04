@@ -114,7 +114,7 @@ public class praying_time extends AppCompatActivity {
             builder.show();
         }
         //will be true if activity opened from notification clicked
-        /*boolean clicked = getIntent().getBooleanExtra("clicked", false);
+        boolean clicked = getIntent().getBooleanExtra("clicked", false);
         if (clicked) {
             if (tools.mp != null) {
                 if (tools.mp.isPlaying()) {
@@ -122,7 +122,7 @@ public class praying_time extends AppCompatActivity {
                     tools.mp.release();
                 }
             }
-        }*/
+        }
 
         inflates();
 
@@ -440,6 +440,7 @@ public class praying_time extends AppCompatActivity {
 
                             mtimes = new ArrayList<>(time);
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
+                            intent.putExtra("update",update);
                             ContextCompat.startForegroundService(praying_time.this, intent);
                             //if (!tools.isMyServiceRunning(AlarmService.class)) {
                             //intent.putExtra("time", time);
@@ -467,7 +468,7 @@ public class praying_time extends AppCompatActivity {
             });
             request.add(objectRequest);
         } else {
-            tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت لتتمكن من معرفة مواقيت الصلاة");
+            tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
         }
     }
 
