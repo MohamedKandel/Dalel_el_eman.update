@@ -32,6 +32,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.mkandeel.countrycity.Cities;
 import com.mkandeel.countrycity.Countries;
 import com.mkandeel.dalelelemanupdate.R;
+import com.mkandeel.dalelelemanupdate.praying_time;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +56,7 @@ public class Tools {
     private Context context;
     private static Tools tools;
     private static final String channelID = "MyAppChannelID";
+    public MediaPlayer mp;
 
     public Tools(Context context) {
         this.context = context;
@@ -632,6 +634,41 @@ public class Tools {
         PendingIntent pi = PendingIntent.getActivity(context, 99,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pi);
+
+        NotificationManagerCompat mcompact = NotificationManagerCompat.from(context);
+
+        mcompact.notify(99, builder.build());
+    }
+
+    public void QyamNotification(String Notif_title,String Notif_msg,Class<?> activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelID, "Dalel el eman",
+                    NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager manager = context.getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+
+        Uri sound = Uri.parse("android.resource://"
+                + context.getPackageName() + "/" + R.raw.azan);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
+        builder.setSmallIcon(R.drawable.notif)
+                .setContentTitle(Notif_title)
+                .setContentText(Notif_msg)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOngoing(true)
+                .setAutoCancel(true);
+                //.setSound(sound)
+
+        Intent intent = new Intent(context, activity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        intent.putExtra("clicked", true);
+        PendingIntent pi = PendingIntent.getActivity(context, 99,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pi);
+
+        mp = MediaPlayer.create(context,sound);
+        mp.start();
 
         NotificationManagerCompat mcompact = NotificationManagerCompat.from(context);
 
