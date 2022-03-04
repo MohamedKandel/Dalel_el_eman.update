@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">دليل الإيمان</string>
+    <string name="name">Name</string>
+    <string name="name_ar">الاسم</string>
+    <string name="enter_your_name">اسم المستخدم</string>
+    <string name="country">Country</string>
+    <string name="city">City</string>
+    <string name="City_ary">المدينة</string>
+    <string name="Country_ar">الدولة</string>
+    <string name="register_ar">تسجيل</string>
+    <string name="reg_ar">تسجيل</string>
+    <string name="create_ar">إنشاء حساب</string>
+    <string name="country_ar">الدولة</string>
+    <string name="city_ar">المدينة</string>
+    <string name="username_ar">اسم المستخدم</string>
+    <string name="login">بالفعل أمتلك حساب</string>
+    <string name="login_ar">تسجيل الدخول</string>
+    <string name="pass_ar">كلمة المرور</string>
+    <string name="enter">دخول</string>
+    <string name="recreate_ar">إنشاء حساب جديد</string>
+    <string name="main_ar">القائمة الرئيسة</string>
+    <string name="textview"></string>
+    <string name="pt_ar">مواقيت الصلاة</string>
+    <string name="design_mail"><u>omkoomko18@gmail.com</u></string>
+    <string name="develop_mail"><u>mohamed.hossam7799@gmail.com</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

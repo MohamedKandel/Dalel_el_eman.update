@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "551883907866",
+    "project_id": "dalel-el-eman-649e3",
+    "storage_bucket": "dalel-el-eman-649e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551883907866:android:2e1e20db7f8d57902d02a3",
+        "android_client_info": {
+          "package_name": "com.mkandeel.dalelelemanupdate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551883907866-j19lpv7nd0cu40m8uqk6dk6amkv78kth.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGVDufHz1SZ2RPjAIzYwBktJnkM9K56rg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551883907866-j19lpv7nd0cu40m8uqk6dk6amkv78kth.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

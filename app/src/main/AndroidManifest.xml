@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mkandeel.dalelelemanupdate">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>-->
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Others"></activity>
+        <activity android:name=".Share" />
+        <activity
+            android:name=".Profile"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".Contact_Us" />
+        <activity android:name=".CopyRight" />
+        <activity android:name=".Settings" />
+        <activity android:name=".Quraan_fehress" />
+        <activity android:name=".Tarteeb" />
+        <activity android:name=".Sebha" />
+        <activity android:name=".Doaa_fehress" />
+        <activity android:name=".Hadeeth" />
+        <activity
+            android:name="com.hassanjamil.hqibla.CompassActivity"
+            android:label="@string/app_name"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity android:name=".Zekr" />
+        <activity android:name=".Azkar" />
+        <activity android:name=".Play" />
+        <activity android:name=".Tarteel" />
+
+        <service
+            android:name=".HelperClasses.AlarmService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".Quraan" />
+        <activity android:name=".Home_Activity" />
+        <activity android:name=".Login" />
+        <activity android:name=".register" />
+        <activity
+            android:name=".praying_time"
+            android:launchMode="singleTop" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".HelperClasses.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>

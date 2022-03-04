@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <!--colorAccent -> "#03DAC5"-->
+    <color name="black">#000</color>
+    <color name="white">#fff</color>
+    <color name="off_white">#F6F6F6</color>
+    <color name="btn_normal">#23CB33</color>
+    <color name="btn_pressed">#1CA529</color>
+    <color name="bg_start">#8C2480</color>
+    <color name="bg_end">#FFC96F</color>
+    <color name="link">#422ADF</color>
+    <color name="link_dark">#7B67FA</color>
+    <color name="btn_main_normal">#009688</color>
+    <color name="btn_main_pressed">#00756A</color>
+    <color name="surah_name_light">#07645F</color>
+    <color name="text_play">#F9B931</color>
+    <color name="gray">#8C9592</color>
+    <color name="border_rossary">#FFD700</color>
+    <color name="Hint_Color_Dark">#CDCDCD</color>
+    <color name="Hint_Color_Light">#B3B3B3</color>
+    <color name="brown_sunrise">#48321B</color>
+    <color name="brown_night">#F1D00A</color>
+    <color name="dark_mode">#424242</color>
+</resources>
