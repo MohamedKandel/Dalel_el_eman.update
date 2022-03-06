@@ -114,7 +114,7 @@ public class praying_time extends AppCompatActivity {
             builder.show();
         }
         //will be true if activity opened from notification clicked
-        boolean clicked = getIntent().getBooleanExtra("clicked", false);
+        /*boolean clicked = getIntent().getBooleanExtra("clicked", false);
         if (clicked) {
             if (tools.mp != null) {
                 if (tools.mp.isPlaying()) {
@@ -122,7 +122,7 @@ public class praying_time extends AppCompatActivity {
                     tools.mp.release();
                 }
             }
-        }
+        }*/
 
         inflates();
 
