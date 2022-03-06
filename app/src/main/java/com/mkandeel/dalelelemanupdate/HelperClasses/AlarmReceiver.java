@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
+import android.util.Log;
+
 import static android.content.Context.POWER_SERVICE;
 
 import com.mkandeel.dalelelemanupdate.praying_time;
@@ -18,7 +20,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         String Notif_message = "حي على الصلاة";
         if (intent.getExtras() != null) {
             int index = intent.getExtras().getInt("index");
-            if (index > 5) {
                 switch (index) {
                     case 0:
                         Notif_title = "حان الآن موعد آذان الفجر";
@@ -37,12 +38,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         Notif_title = "حان الآن موعد آذان العشاء";
                         break;
                 }
-                tools.ShowNotification(Notif_title, Notif_message, praying_time.class);
-            } else {
-                Notif_title = "الثلث الاخير من الليل";
-                Notif_message = "اقم الليل واذكر الله";
-                tools.QyamNotification(Notif_title,Notif_message,praying_time.class);
-            }
+            tools.ShowNotification(Notif_title, Notif_message, praying_time.class);
         }
     }
 }
