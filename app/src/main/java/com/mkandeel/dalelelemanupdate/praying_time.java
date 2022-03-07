@@ -88,7 +88,7 @@ public class praying_time extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-        boolean isAvailable = tools.isPackageAvailable("com.example.firstproject");
+        boolean isAvailable = tools.isPackageAvailable("dalel.el_eman");
         //old version found
         if (isAvailable) {
             Log.d("Note","Application found");
@@ -99,10 +99,9 @@ public class praying_time extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent uninstall = new Intent(Intent.ACTION_DELETE);
-                    uninstall.setData(Uri.parse("package:com.example.firstproject"));
+                    uninstall.setData(Uri.parse("package:dalel.el_eman"));
                     startActivity(uninstall);
                     dialog.dismiss();
-                    //PackageInstaller installer = context.getPackageManager().getPackageInstaller();
                 }
             });
             builder.setNegativeButton("لا اريد حذفها", new DialogInterface.OnClickListener() {
