@@ -51,6 +51,7 @@ public class Sebha extends AppCompatActivity {
     private int OldCount, NewCount;
     private DBConnection connection;
     private ValueComparator comparator;
+    private int BackClicked = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,6 @@ public class Sebha extends AppCompatActivity {
         if (isNetworkAvailable()) {
             GetData(UID);
             GetRank(UID);
-            //tools.Message(UID);
             layout.setClickable(true);
             layout.setEnabled(true);
         } else {
@@ -107,7 +107,7 @@ public class Sebha extends AppCompatActivity {
                 count++;
                 txt_count.setText(String.valueOf(count));
                 if (isNetworkAvailable() && img_count.isEnabled() && img_count.isClickable()) {
-                    UpdateData(UID);
+                    //UpdateData(UID);
                     img_count.setEnabled(false);
                     img_count.setClickable(false);
                     new Handler().postDelayed(new Runnable() {
@@ -116,7 +116,7 @@ public class Sebha extends AppCompatActivity {
                             img_count.setClickable(true);
                             img_count.setEnabled(true);
                         }
-                    }, 500);
+                    }, 200);
                 }
             }
         });
@@ -125,9 +125,15 @@ public class Sebha extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()) {
-                    Intent intent = new Intent(Sebha.this, Tarteeb.class);
-                    startActivity(intent);
-                    finish();
+                    UpdateData(UID,Integer.parseInt(txt_count.getText().toString().trim()));
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(Sebha.this, Tarteeb.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    },100);
                 } else {
                     tools.Message("عذرًا لا يمكنك معرفة الترتيبات إلا في وجود اتصال بالانترنت");
                 }
@@ -200,7 +206,7 @@ public class Sebha extends AppCompatActivity {
         });
     }
 
-    private void UpdateData(String uid) {
+    /*private void UpdateData(String uid) {
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("Database").child("Users");
 
@@ -215,6 +221,35 @@ public class Sebha extends AppCompatActivity {
                         if (contest != null) {
                             OldCount = contest.getCount();
                             NewCount = OldCount + 1;
+                        }
+                    }
+                    HashMap<String, Object> user = new HashMap<>();
+                    user.put("count", NewCount);
+                    reference.child(uid).updateChildren(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }*/
+
+    private void UpdateData(String uid,int count) {
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("Database").child("Users");
+
+        Query query = reference.orderByChild("userid").equalTo(uid);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Contest contest = ds.getValue(Contest.class);
+                        if (contest != null) {
+                            OldCount = contest.getCount();
+                            NewCount = OldCount + count;
                         }
                     }
                     HashMap<String, Object> user = new HashMap<>();
@@ -302,10 +337,18 @@ public class Sebha extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(this, Home_Activity.class);
-        startActivity(intent);
-        finish();
+        if (BackClicked == 0) {
+            String UID = state.GetUID();
+            //UpdateData(UID);
+            UpdateData(UID,Integer.parseInt(txt_count.getText().toString().trim()));
+            tools.Message("برجاء الضغط مرة اخرى للرجوع");
+            BackClicked ++;
+        } else {
+            super.onBackPressed();
+            Intent intent = new Intent(this, Home_Activity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
