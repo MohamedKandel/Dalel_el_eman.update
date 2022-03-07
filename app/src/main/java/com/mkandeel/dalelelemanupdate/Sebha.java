@@ -107,7 +107,6 @@ public class Sebha extends AppCompatActivity {
                 count++;
                 txt_count.setText(String.valueOf(count));
                 if (isNetworkAvailable() && img_count.isEnabled() && img_count.isClickable()) {
-                    //UpdateData(UID);
                     img_count.setEnabled(false);
                     img_count.setClickable(false);
                     new Handler().postDelayed(new Runnable() {
@@ -205,37 +204,7 @@ public class Sebha extends AppCompatActivity {
             }
         });
     }
-
-    /*private void UpdateData(String uid) {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference("Database").child("Users");
-
-        Query query = reference.orderByChild("userid").equalTo(uid);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        Contest contest = ds.getValue(Contest.class);
-                        if (contest != null) {
-                            OldCount = contest.getCount();
-                            NewCount = OldCount + 1;
-                        }
-                    }
-                    HashMap<String, Object> user = new HashMap<>();
-                    user.put("count", NewCount);
-                    reference.child(uid).updateChildren(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }*/
-
+    
     private void UpdateData(String uid,int count) {
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("Database").child("Users");
@@ -339,7 +308,6 @@ public class Sebha extends AppCompatActivity {
     public void onBackPressed() {
         if (BackClicked == 0) {
             String UID = state.GetUID();
-            //UpdateData(UID);
             UpdateData(UID,Integer.parseInt(txt_count.getText().toString().trim()));
             tools.Message("برجاء الضغط مرة اخرى للرجوع");
             BackClicked ++;
