@@ -14,7 +14,6 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,7 +32,6 @@ import com.mkandeel.dalelelemanupdate.HelperClasses.Contest;
 import com.mkandeel.dalelelemanupdate.HelperClasses.DBConnection;
 import com.mkandeel.dalelelemanupdate.HelperClasses.State;
 import com.mkandeel.dalelelemanupdate.HelperClasses.Tools;
-import com.mkandeel.dalelelemanupdate.HelperClasses.ValueComparator;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -43,14 +41,13 @@ import java.util.TreeMap;
 public class Sebha extends AppCompatActivity {
 
     private TextView txt_main, textViewtarteeb, txt_count, txt_name, txt_country, txt_tarteeb,
-            txtViewName, txtViewCountry, txtViewTarteeb;
-    private ImageView img_count/*,img_cup*/;
+            txtViewName, txtViewCountry, txtViewTarteeb, txtView11, txt_mcount;
+    private ImageView img_count;
     private LinearLayout layout;
     private Tools tools;
     private State state;
-    private int OldCount, NewCount;
+    private int OldCount;
     private DBConnection connection;
-    private ValueComparator comparator;
     private int BackClicked = 0;
 
     @Override
@@ -66,16 +63,18 @@ public class Sebha extends AppCompatActivity {
         boolean isDark = state.getState();
         if (isDark) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            tools.Change_Color("white", txt_main, textViewtarteeb,txt_name,
-                    txt_country,txt_tarteeb,txtViewName,txtViewTarteeb,txtViewCountry);
+            tools.Change_Color("white", txt_main, textViewtarteeb, txt_name,
+                    txt_country, txt_tarteeb, txtViewName, txtViewTarteeb, txtViewCountry, txtView11,
+                    txt_mcount);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             tools.Change_Color("black", txt_main, textViewtarteeb);
-            tools.Change_Color("green",txt_name,txt_country,txt_tarteeb,txtViewCountry,
-                    txtViewTarteeb,txtViewName);
+            tools.Change_Color("green", txt_name, txt_country, txt_tarteeb, txtViewCountry,
+                    txtViewTarteeb, txtViewName, txtView11, txt_mcount);
         }
-        tools.ChangeFont("cairo.ttf", txt_main, txtViewName, txtViewCountry, txtViewTarteeb);
-        tools.ChangeFont("AdobeArabic.otf", textViewtarteeb, txt_name, txt_tarteeb, txt_country);
+        tools.ChangeFont("cairo.ttf", txt_main, txtViewName, txtViewCountry, txtViewTarteeb,txtView11);
+        tools.ChangeFont("AdobeArabic.otf", textViewtarteeb, txt_name, txt_tarteeb, txt_country,
+                txt_mcount);
         tools.ChangeFont("segoeui.ttf", txt_count);
 
         String UID = state.GetUID();
@@ -86,7 +85,7 @@ public class Sebha extends AppCompatActivity {
             layout.setEnabled(true);
         } else {
             if (state.GetSebhaDialog()) {
-                CreateDialog("تطبيق دليل الإيمان","عذرًا لا يوجد اتصال بالانترنت يمكنك التسبيح ولكن لن يُحتسب ذلك التسبيح للمسابقة",
+                CreateDialog("تطبيق دليل الإيمان", "عذرًا لا يوجد اتصال بالانترنت يمكنك التسبيح ولكن لن يُحتسب ذلك التسبيح للمسابقة",
                         isDark);
             }
             String Data = connection.GetData(UID);
@@ -116,7 +115,7 @@ public class Sebha extends AppCompatActivity {
                             img_count.setClickable(true);
                             img_count.setEnabled(true);
                         }
-                    }, 200);
+                    }, 100);
                 }
             }
         });
@@ -125,7 +124,7 @@ public class Sebha extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()) {
-                    UpdateData(UID,Integer.parseInt(txt_count.getText().toString().trim()));
+                    UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()));
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -133,14 +132,14 @@ public class Sebha extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }
-                    },100);
+                    }, 500);
                 } else {
                     tools.Message("عذرًا لا يمكنك معرفة الترتيبات إلا في وجود اتصال بالانترنت");
                 }
             }
         });
     }
-    
+
     private void GetRank(String uid) {
         Map<String, Integer> map = new LinkedHashMap<>();
         DatabaseReference reference = FirebaseDatabase.getInstance()
@@ -158,12 +157,10 @@ public class Sebha extends AppCompatActivity {
                             }
                         }
                     }
-                    comparator = new ValueComparator(map);
-                    Map<String,Integer> map2 = new TreeMap<>(comparator);
-                    map2.putAll(map);
-                    System.out.println("Map " + map2);
+                    Map<String, Integer> sorted = tools.SortMapByValue(map);
+                    System.out.println("Map " + sorted);
                     String username = connection.GetUserName(uid);
-                    int Rank = tools.GetRank(map2, username);
+                    int Rank = tools.GetRank(sorted, username);
                     txt_tarteeb.setText(String.valueOf(Rank));
                 }
             }
@@ -190,8 +187,10 @@ public class Sebha extends AppCompatActivity {
                         if (contest != null) {
                             String Name = contest.getName();
                             String country = contest.getCountry();
+                            int count = contest.getCount();
                             txt_name.setText(Name);
                             txt_country.setText(country);
+                            txt_mcount.setText(String.valueOf(count));
                         }
                     }
                 } else {
@@ -206,37 +205,7 @@ public class Sebha extends AppCompatActivity {
         });
     }
 
-    /*private void UpdateData(String uid) {
-        DatabaseReference reference = FirebaseDatabase.getInstance()
-                .getReference("Database").child("Users");
-
-        Query query = reference.orderByChild("userid").equalTo(uid);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        Contest contest = ds.getValue(Contest.class);
-                        if (contest != null) {
-                            OldCount = contest.getCount();
-                            NewCount = OldCount + 1;
-                        }
-                    }
-                    HashMap<String, Object> user = new HashMap<>();
-                    user.put("count", NewCount);
-                    reference.child(uid).updateChildren(user);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }*/
-
-    private void UpdateData(String uid,int count) {
+    private void UpdateData(String uid, int count) {
         if (isNetworkAvailable()) {
             DatabaseReference reference = FirebaseDatabase.getInstance()
                     .getReference("Database").child("Users");
@@ -250,12 +219,13 @@ public class Sebha extends AppCompatActivity {
                             Contest contest = ds.getValue(Contest.class);
                             if (contest != null) {
                                 OldCount = contest.getCount();
-                                NewCount = OldCount + count;
                             }
                         }
-                        HashMap<String, Object> user = new HashMap<>();
-                        user.put("count", NewCount);
-                        reference.child(uid).updateChildren(user);
+                        if (count > OldCount) {
+                            HashMap<String, Object> user = new HashMap<>();
+                            user.put("count", count);
+                            reference.child(uid).updateChildren(user);
+                        }
                     }
                 }
 
@@ -287,9 +257,12 @@ public class Sebha extends AppCompatActivity {
         txtViewTarteeb = findViewById(R.id.textView10);
         //count button
         img_count = findViewById(R.id.img_count);
+
+        txtView11 = findViewById(R.id.textView11);
+        txt_mcount = findViewById(R.id.txt_mcount);
     }
 
-    public void CreateDialog(String title,String message,boolean isDark) {
+    public void CreateDialog(String title, String message, boolean isDark) {
         Dialog dialog = new Dialog(Sebha.this);
         if (isDark) {
             dialog.setContentView(R.layout.dilaog_dark);
@@ -309,8 +282,8 @@ public class Sebha extends AppCompatActivity {
         txt_title.setText(title);
         txt_message.setText(message);
 
-        tools.ChangeFont("AdobeArabic.otf",txt_message,txt_title);
-        tools.ChangeButtonFont("AdobeArabic.otf",btn_ok);
+        tools.ChangeFont("AdobeArabic.otf", txt_message, txt_title);
+        tools.ChangeButtonFont("AdobeArabic.otf", btn_ok);
 
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -344,9 +317,9 @@ public class Sebha extends AppCompatActivity {
         if (BackClicked == 0) {
             String UID = state.GetUID();
             //UpdateData(UID);
-            UpdateData(UID,Integer.parseInt(txt_count.getText().toString().trim()));
+            UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()));
             tools.Message("برجاء الضغط مرة اخرى للرجوع");
-            BackClicked ++;
+            BackClicked++;
         } else {
             super.onBackPressed();
             Intent intent = new Intent(this, Home_Activity.class);
