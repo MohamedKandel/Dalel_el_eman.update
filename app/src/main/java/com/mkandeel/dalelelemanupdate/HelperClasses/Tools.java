@@ -12,10 +12,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.TypefaceSpan;
@@ -621,7 +623,7 @@ public class Tools {
                 + context.getPackageName() + "/" + R.raw.azan);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
-        builder.setSmallIcon(R.drawable.notif)
+        builder.setSmallIcon(R.drawable.azan)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -640,7 +642,7 @@ public class Tools {
 
         mcompact.notify(99, builder.build());
     }
-    
+
     public String[] GetHoursAndMin(String text) {
         String time = getnum(text);
         String[] arr = time.split(":");
@@ -887,11 +889,11 @@ public class Tools {
 
     public int GetRank(Map<String, Integer> map, String Target) {
         List<String> keys = new ArrayList<>();
-        for (Map.Entry<String,Integer> entry : map.entrySet()) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
             keys.add(entry.getKey());
         }
         int index = keys.indexOf(Target);
-        index ++;
+        index++;
         return index;
     }
 
@@ -1055,15 +1057,14 @@ public class Tools {
         return false;
     }
 
-    public Map<String,Integer> SortMapByValue(Map<String,Integer> map) {
-        Map<String,Integer> sorted = new LinkedHashMap<>();
-        List<Map.Entry<String, Integer> > list =
-                new LinkedList<Map.Entry<String, Integer> >(map.entrySet());
+    public Map<String, Integer> SortMapByValue(Map<String, Integer> map) {
+        Map<String, Integer> sorted = new LinkedHashMap<>();
+        List<Map.Entry<String, Integer>> list =
+                new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
         // Sort the list
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
             public int compare(Map.Entry<String, Integer> o1,
-                               Map.Entry<String, Integer> o2)
-            {
+                               Map.Entry<String, Integer> o2) {
                 return (o2.getValue()).compareTo(o1.getValue());
             }
         });
@@ -1071,5 +1072,32 @@ public class Tools {
             sorted.put(aa.getKey(), aa.getValue());
         }
         return sorted;
+    }
+
+    public String ExtFromURI(Uri contentURI, boolean GetExtentsion) {
+        String result;
+        Cursor cursor = context.getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx;
+            if (GetExtentsion) {
+                idx = cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE);
+            } else {
+                idx = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
+            }
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        if (GetExtentsion) {
+            if (result != null) {
+                return result.split("/")[1];
+            } else {
+                return "";
+            }
+        } else {
+            return result;
+        }
     }
 }
