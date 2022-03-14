@@ -623,7 +623,7 @@ public class Tools {
                 + context.getPackageName() + "/" + R.raw.azan);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelID);
-        builder.setSmallIcon(R.drawable.azan)
+        builder.setSmallIcon(R.drawable.ic_azan)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
