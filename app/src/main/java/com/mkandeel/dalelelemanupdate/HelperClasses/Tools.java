@@ -59,7 +59,7 @@ public class Tools {
 
     private Context context;
     private static Tools tools;
-    private static final String channelID = "MyAppChannelID";
+    private static final String channelID = "com.mkandeel.daleleleman.MyAppChannelID";
 
     public Tools(Context context) {
         this.context = context;
