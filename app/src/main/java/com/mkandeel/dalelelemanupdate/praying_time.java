@@ -91,7 +91,7 @@ public class praying_time extends AppCompatActivity {
         boolean isAvailable = tools.isPackageAvailable("dalel.el_eman");
         //old version found
         if (isAvailable) {
-            Log.d("Note","Application found");
+            Log.d("Note", "Application found");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("تحديث تطبيق دليل الإيمان");
             builder.setMessage("تم العثور على اصدار قديم من تطبيق دليل الايمان التي تم ايقاف الدعم عنه\nهل تريد حذف الاصدار القديم");
@@ -146,11 +146,11 @@ public class praying_time extends AppCompatActivity {
                 txt_isha, txt_isha_ar, txt_isha_en);
         tools.ChangeFont("calibri.ttf", txt_day, txt_hijri, txt_remain, txt_date);
 
-        if(isNetworkAvailable()) {
+        /*if (isNetworkAvailable()) {
             request = Volley.newRequestQueue(this);
         } else {
             tools.Message("عذرًا .. لا يوجد اتصال بالانترنت ، تأكد من اتصال هاتفك بالانترنت لتتمكن من معرفة اوقات الصلاة");
-        }
+        }*/
         CountryCity = connection.GetCountryAndCity();
         String[] arr = CountryCity.split("\n");
 
@@ -321,36 +321,53 @@ public class praying_time extends AppCompatActivity {
                     }
                     //else fetch new Data from API with Date and send update as false
                     else {
-                        Day = tools.Today(true);
+                        if (isNetworkAvailable()) {
+                            request = Volley.newRequestQueue(this);
 
-                        URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
-                                + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
-                        JSONParse(URL, Day, false);
+                            Day = tools.Today(true);
+                            URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
+                                    + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
+                            JSONParse(URL, Day, false);
 
-                        tools.Message("More days before opening application");
-                        Log.d("Note", "More days before opening application");
+                            tools.Message("More days before opening application");
+                            Log.d("Note", "More days before opening application");
+                        } else {
+                            tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
+                        }
                     }
                 }
             } else {
-                Day = tools.Today(true);
-                URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
-                        + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
-                JSONParse(URL, Day, false);
-                tools.Message("no DB found");
-                Log.d("Note", "Change Location");
+                if (isNetworkAvailable()) {
+                    request = Volley.newRequestQueue(this);
+
+                    Day = tools.Today(true);
+                    URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
+                            + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
+                    JSONParse(URL, Day, false);
+                    tools.Message("no DB found");
+                    Log.d("Note", "Change Location");
+                } else {
+                    tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
+                }
             }
         }
         //if no DB found (call first time application opened only)
         else {
             //Fetch Data from API and Set Date as Today
-            Day = tools.Today(true);
+            if (isNetworkAvailable()) {
+                request = Volley.newRequestQueue(this);
 
-            URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
-                    + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
+                Day = tools.Today(true);
 
-            JSONParse(URL, Day, false);
-            tools.Message("no DB found");
-            Log.d("Note", "no DB found");
+                URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
+                        + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
+
+                JSONParse(URL, Day, false);
+                tools.Message("no DB found");
+                Log.d("Note", "no DB found");
+            } else {
+                tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
+            }
         }
 
         btn_main.setOnClickListener(new View.OnClickListener() {
@@ -439,7 +456,7 @@ public class praying_time extends AppCompatActivity {
 
                             mtimes = new ArrayList<>(time);
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            intent.putExtra("update",update);
+                            intent.putExtra("update", update);
                             ContextCompat.startForegroundService(praying_time.this, intent);
                             //if (!tools.isMyServiceRunning(AlarmService.class)) {
                             //intent.putExtra("time", time);
