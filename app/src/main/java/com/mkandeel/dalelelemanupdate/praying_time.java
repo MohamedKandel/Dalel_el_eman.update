@@ -187,7 +187,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy);
+                        setNextAndRemain(times_Copy,false);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -248,7 +248,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy);
+                        setNextAndRemain(times_Copy,false);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -291,7 +291,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy);
+                        setNextAndRemain(times_Copy,false);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -451,7 +451,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
 
-                        setNextAndRemain(times_Copy);
+                        setNextAndRemain(times_Copy,update);
                         if (!tools.UpdateRemain(tools.GetTime(), times_Copy).equals("Tomorrow")) {
                             time = new ArrayList<>();
                             for (int i = 0; i < times_Copy.size(); i++) {
@@ -549,7 +549,7 @@ public class praying_time extends AppCompatActivity {
     }
 
     //use this method to set Next and remaining time
-    private void setNextAndRemain(List<String> times_Copy) {
+    private void setNextAndRemain(List<String> times_Copy, boolean update) {
         String rem = tools.UpdateRemain(tools.GetTime(), times_Copy);
         txt_remain.setText(rem);
 
@@ -562,7 +562,10 @@ public class praying_time extends AppCompatActivity {
         if (next.trim().equals("")) {
             txt_salah.setText("Remaining for Fajr prayer");
         } else {
-            int index = times_Copy.indexOf(next);
+            int index = 0;
+            if (!update) {
+                index = times_Copy.indexOf(next);
+            }
             switch (index) {
                 case 0:     //fajr
                     txt_salah.setText("Remaining for Fajr prayer");
