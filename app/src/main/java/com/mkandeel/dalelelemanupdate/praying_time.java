@@ -221,13 +221,18 @@ public class praying_time extends AppCompatActivity {
                         tools.Message("From DB(TOMORROW)");
 
                     } else {
-                        txt_hijri.setText(tools.FormatHijri(times.get(1)));
-                        URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
-                                + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
-                        JSONParse(URL, Day, true);
+                        if (isNetworkAvailable()) {
+                            request = Volley.newRequestQueue(this);
+                            txt_hijri.setText(tools.FormatHijri(times.get(1)));
+                            URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
+                                    + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
+                            JSONParse(URL, Day, true);
 
-                        tools.Message("From API (TOMORROW)");
-                        Log.d("Note", "From API (TOMORROW)");
+                            tools.Message("From API (TOMORROW)");
+                            Log.d("Note", "From API (TOMORROW)");
+                        } else {
+                            tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
+                        }
                     }
                 }
                 //if it return time
