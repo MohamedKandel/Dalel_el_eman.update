@@ -41,7 +41,9 @@ import com.mkandeel.dalelelemanupdate.HelperClasses.Tools;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class praying_time extends AppCompatActivity {
@@ -66,7 +68,6 @@ public class praying_time extends AppCompatActivity {
     private CountDownTimer timer;
     private boolean isTimerRunning;
     private long Time_Left;
-    //private Time[] time;
     private ArrayList<Time> time;
 
     @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
@@ -112,16 +113,7 @@ public class praying_time extends AppCompatActivity {
             });
             builder.show();
         }
-        //will be true if activity opened from notification clicked
-        /*boolean clicked = getIntent().getBooleanExtra("clicked", false);
-        if (clicked) {
-            if (tools.mp != null) {
-                if (tools.mp.isPlaying()) {
-                    tools.mp.stop();
-                    tools.mp.release();
-                }
-            }
-        }*/
+
 
         inflates();
 
@@ -146,23 +138,14 @@ public class praying_time extends AppCompatActivity {
                 txt_isha, txt_isha_ar, txt_isha_en);
         tools.ChangeFont("calibri.ttf", txt_day, txt_hijri, txt_remain, txt_date);
 
-        /*if (isNetworkAvailable()) {
-            request = Volley.newRequestQueue(this);
-        } else {
-            tools.Message("عذرًا .. لا يوجد اتصال بالانترنت ، تأكد من اتصال هاتفك بالانترنت لتتمكن من معرفة اوقات الصلاة");
-        }*/
+        
         CountryCity = connection.GetCountryAndCity();
         String[] arr = CountryCity.split("\n");
 
         times = connection.GetTimes();
-
-
+        
         //if DB found in local storage
         if (times.size() > 0) {
-            /*if (tools.isMyServiceRunning(AlarmService.class)) {
-                Intent intent = new Intent(praying_time.this, AlarmService.class);
-                stopService(intent);
-            }*/
             //Get Current Date (Today)
             String DBDate = times.get(0);
 
@@ -197,8 +180,6 @@ public class praying_time extends AppCompatActivity {
                         txt_mag.setText(tools.Format(times.get(6)));
                         txt_isha.setText(tools.Format(times.get(7)));
 
-                        /*Intent intent = new Intent(praying_time.this, AlarmService.class);
-                        stopService(intent);*/
                         time = new ArrayList<>();
 
                         for (int i = 0; i < times_Copy.size(); i++) {
@@ -210,11 +191,9 @@ public class praying_time extends AppCompatActivity {
 
                         if (!tools.isMyServiceRunning(AlarmService.class)) {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            //intent.putExtra("time", time);
-                            //startService(intent);
+                            intent.putExtra("update",true);
                             ContextCompat.startForegroundService(this, intent);
                         }
-
                         updateTextView();
 
                         Log.d("Note", "From DB(TOMORROW)");
@@ -257,10 +236,7 @@ public class praying_time extends AppCompatActivity {
                         txt_asr.setText(tools.Format(times.get(5)));
                         txt_mag.setText(tools.Format(times.get(6)));
                         txt_isha.setText(tools.Format(times.get(7)));
-
-                        /*Intent intent = new Intent(praying_time.this, AlarmService.class);
-                        stopService(intent);*/
-
+                        
                         time = new ArrayList<>();
 
                         for (int i = 0; i < times_Copy.size(); i++) {
@@ -270,8 +246,7 @@ public class praying_time extends AppCompatActivity {
                         mtimes = new ArrayList<>(time);
                         if (!tools.isMyServiceRunning(AlarmService.class)) {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            //intent.putExtra("time", time);
-                            //startService(intent);
+                            intent.putExtra("update",false);
                             ContextCompat.startForegroundService(this, intent);
                         }
 
@@ -300,10 +275,7 @@ public class praying_time extends AppCompatActivity {
                         txt_asr.setText(tools.Format(times.get(5)));
                         txt_mag.setText(tools.Format(times.get(6)));
                         txt_isha.setText(tools.Format(times.get(7)));
-
-                        /*Intent intent = new Intent(praying_time.this, AlarmService.class);
-                        stopService(intent);*/
-
+                        
                         time = new ArrayList<>();
 
                         for (int i = 0; i < times_Copy.size(); i++) {
@@ -315,10 +287,10 @@ public class praying_time extends AppCompatActivity {
 
                         if (!tools.isMyServiceRunning(AlarmService.class)) {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            //intent.putExtra("time", time);
+                            intent.putExtra("update",true);
                             ContextCompat.startForegroundService(this, intent);
                         }
-
+                        
                         updateTextView();
 
                         tools.Message("From DB (TOMORROW)");
