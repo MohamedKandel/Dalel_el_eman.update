@@ -59,7 +59,7 @@ public class Tools {
 
     private Context context;
     private static Tools tools;
-    private static final String channelID = "com.mkandeel.daleleleman.MyAppChannelID";
+    private static final String channelID = "MyAppChannelID";
 
     public Tools(Context context) {
         this.context = context;
@@ -213,52 +213,56 @@ public class Tools {
 
     //return "" if no next time and time if there is next time found
     @SuppressLint("SimpleDateFormat")
-    public String GetNext(String time, List<String> times) {
+    public String GetNext(String time, List<String> times,boolean update) {
         String Next = "";
-        Map<String, Long> diffs = new LinkedHashMap<>();
+        if (!update) {
+            Map<String, Long> diffs = new LinkedHashMap<>();
 
-        long mMillis;
-        try {
-            Date mdate = new SimpleDateFormat("HH:mm").parse(time);
-            assert mdate != null;
-            mMillis = mdate.getTime();
-            for (String t : times) {
-                Date date = new SimpleDateFormat("HH:mm").parse(t);
-                assert date != null;
-                long millis = date.getTime();
-                long diff = millis - mMillis;
+            long mMillis;
+            try {
+                Date mdate = new SimpleDateFormat("HH:mm").parse(time);
+                assert mdate != null;
+                mMillis = mdate.getTime();
+                for (String t : times) {
+                    Date date = new SimpleDateFormat("HH:mm").parse(t);
+                    assert date != null;
+                    long millis = date.getTime();
+                    long diff = millis - mMillis;
 
-                diffs.put(t, diff);
+                    diffs.put(t, diff);
+                }
+            } catch (Exception e) {
+                System.out.println("From GetNext " + e.getMessage());
+                Log.d("GetNext", Objects.requireNonNull(e.getMessage()));
             }
-        } catch (Exception e) {
-            System.out.println("From GetNext " + e.getMessage());
-            Log.d("GetNext", Objects.requireNonNull(e.getMessage()));
-        }
-        ArrayList<Long> list = new ArrayList<>();
-        for (Map.Entry<String, Long> entry : diffs.entrySet()) {
-            if (entry.getValue() > 0) {
-                list.add(entry.getValue());
-            }
-        }
-
-        if (list.size() > 0) {
-            long min = GetMin(list);
+            ArrayList<Long> list = new ArrayList<>();
             for (Map.Entry<String, Long> entry : diffs.entrySet()) {
-                if (entry.getValue() == min) {
-                    Next = entry.getKey();
+                if (entry.getValue() > 0) {
+                    list.add(entry.getValue());
                 }
             }
+
+            if (list.size() > 0) {
+                long min = GetMin(list);
+                for (Map.Entry<String, Long> entry : diffs.entrySet()) {
+                    if (entry.getValue() == min) {
+                        Next = entry.getKey();
+                    }
+                }
+            } else {
+                Next = "";
+            }
         } else {
-            Next = "";
+            Next = times.get(0);
         }
 
         return Next;
     }
 
     //return tomorrow if time after isha prayer
-    public String Remain(String time, List<String> times) {
+    public String Remain(String time, List<String> times,boolean update) {
         String remain = "Tomorrow";
-        String Next = GetNext(time, times);
+        String Next = GetNext(time, times,update);
         System.out.println("Next from Remain " + Next);
         try {
             if (Next.trim().equals("")) {
@@ -274,8 +278,8 @@ public class Tools {
     }
 
     // calculate difference between current time and TOMORROW Fajr prayer
-    public String UpdateRemain(String time, List<String> times) {
-        String Remain = Remain(time, times);
+    public String UpdateRemain(String time, List<String> times,boolean update) {
+        String Remain = Remain(time, times,update);
         String r;
         if (Remain.trim().equals("Tomorrow")) {
             List<String> times_2 = new ArrayList<>(times);
