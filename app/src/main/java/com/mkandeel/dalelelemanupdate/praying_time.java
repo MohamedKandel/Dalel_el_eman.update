@@ -157,7 +157,7 @@ public class praying_time extends AppCompatActivity {
             //if user change his location
             if (connection.GetCountryAndCity().equals(connection.GetCountryCityFromPT())) {
                 //if GetNext method Return ""
-                if (tools.GetNext(tools.GetTime(), times_Copy,false).trim().equals("")) {
+                if (tools.GetNext(tools.GetTime(), times_Copy, false).trim().equals("")) {
                     //Fetch Data for Tomorrow from API and send update as true
                     //use UpdateRemaining to claculate remaining from new time list
                     Day = tools.Today(false);
@@ -170,7 +170,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy,false);
+                        setNextAndRemain(times_Copy, true);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -191,7 +191,7 @@ public class praying_time extends AppCompatActivity {
 
                         if (!tools.isMyServiceRunning(AlarmService.class)) {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            intent.putExtra("update",true);
+                            intent.putExtra("update", true);
                             ContextCompat.startForegroundService(this, intent);
                         }
                         updateTextView();
@@ -227,7 +227,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy,false);
+                        setNextAndRemain(times_Copy, false);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -246,7 +246,7 @@ public class praying_time extends AppCompatActivity {
                         mtimes = new ArrayList<>(time);
                         if (!tools.isMyServiceRunning(AlarmService.class)) {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            intent.putExtra("update",false);
+                            intent.putExtra("update", false);
                             ContextCompat.startForegroundService(this, intent);
                         }
 
@@ -266,7 +266,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy,false);
+                        setNextAndRemain(times_Copy, true);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -287,7 +287,7 @@ public class praying_time extends AppCompatActivity {
 
                         if (!tools.isMyServiceRunning(AlarmService.class)) {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
-                            intent.putExtra("update",true);
+                            intent.putExtra("update", true);
                             ContextCompat.startForegroundService(this, intent);
                         }
 
@@ -423,8 +423,8 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
 
-                        setNextAndRemain(times_Copy,update);
-                        if (!tools.UpdateRemain(tools.GetTime(), times_Copy,update).equals("Tomorrow")) {
+                        setNextAndRemain(times_Copy, update);
+                        if (!tools.UpdateRemain(tools.GetTime(), times_Copy, update).equals("Tomorrow")) {
                             time = new ArrayList<>();
                             for (int i = 0; i < times_Copy.size(); i++) {
                                 time.add(new Time(Integer.parseInt(tools.GetHoursAndMin(times_Copy.get(i))[0]),
@@ -435,9 +435,6 @@ public class praying_time extends AppCompatActivity {
                             Intent intent = new Intent(praying_time.this, AlarmService.class);
                             intent.putExtra("update", update);
                             ContextCompat.startForegroundService(praying_time.this, intent);
-                            //if (!tools.isMyServiceRunning(AlarmService.class)) {
-                            //intent.putExtra("time", time);
-                            //}
                             updateTextView();
                         }
 
@@ -522,40 +519,34 @@ public class praying_time extends AppCompatActivity {
 
     //use this method to set Next and remaining time
     private void setNextAndRemain(List<String> times_Copy, boolean update) {
-        String rem = tools.UpdateRemain(tools.GetTime(), times_Copy,update);
+        String rem = tools.UpdateRemain(tools.GetTime(), times_Copy, update);
         txt_remain.setText(rem);
 
-        START_TIME_IN_MILLIS = tools.GetMillis(tools.UpdateRemain(tools.GetTime(), times_Copy,update));
+        START_TIME_IN_MILLIS = tools.GetMillis(tools.UpdateRemain(tools.GetTime(), times_Copy, update));
         Time_Left = START_TIME_IN_MILLIS;
 
         startTimer();
 
-        String next = tools.GetNext(tools.GetTime(), times_Copy,update);
-        if (next.trim().equals("")) {
-            txt_salah.setText("Remaining for Fajr prayer");
-        } else {
-            int index = 0;
-            if (!update) {
-                index = times_Copy.indexOf(next);
-            }
-            switch (index) {
-                case 0:     //fajr
-                    txt_salah.setText("Remaining for Fajr prayer");
-                    break;
-                case 1:     //duhr
-                    txt_salah.setText("Remaining for Duhur prayer");
-                    break;
-                case 2:     //asr
-                    txt_salah.setText("Remaining for Asr prayer");
-                    break;
-                case 3:     //maghrib
-                    txt_salah.setText("Remaining for Maghrib prayer");
-                    break;
-                case 4:     //isha
-                    txt_salah.setText("Remaining for Isha prayer");
-                    break;
-            }
+        String next = tools.GetNext(tools.GetTime(), times_Copy, update);
+        int index = times_Copy.indexOf(next);
+        switch (index) {
+            case 0:     //fajr
+                txt_salah.setText("Remaining for Fajr prayer");
+                break;
+            case 1:     //duhr
+                txt_salah.setText("Remaining for Duhur prayer");
+                break;
+            case 2:     //asr
+                txt_salah.setText("Remaining for Asr prayer");
+                break;
+            case 3:     //maghrib
+                txt_salah.setText("Remaining for Maghrib prayer");
+                break;
+            case 4:     //isha
+                txt_salah.setText("Remaining for Isha prayer");
+                break;
         }
+
     }
 
     private void startTimer() {
