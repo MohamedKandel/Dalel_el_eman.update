@@ -21,8 +21,7 @@
     <string name="main_ar">القائمة الرئيسة</string>
     <string name="textview"></string>
     <string name="pt_ar">مواقيت الصلاة</string>
-    <string name="design_mail"><u>omkoomko18@gmail.com</u></string>
-    <string name="develop_mail"><u>mohamed.hossam7799@gmail.com</u></string>
+    <string name="mail"><u>GeekGuys2022@gmail.com</u></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
