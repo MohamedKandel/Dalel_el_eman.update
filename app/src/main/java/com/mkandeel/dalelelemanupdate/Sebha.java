@@ -120,6 +120,7 @@ public class Sebha extends AppCompatActivity {
                         }
                     }, 100);
                 }
+                BackClicked = 0;
             }
         });
 
@@ -329,6 +330,8 @@ public class Sebha extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+        /*String UID = state.GetUID();
+        UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()),true);*/
     }
 
     @Override
