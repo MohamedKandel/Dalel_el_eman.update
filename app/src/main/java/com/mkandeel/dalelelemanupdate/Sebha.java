@@ -48,7 +48,6 @@ public class Sebha extends AppCompatActivity {
     private State state;
     private int OldCount;
     private DBConnection connection;
-    private int BackClicked = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,9 @@ public class Sebha extends AppCompatActivity {
         tools = Tools.getInstance(this);
         state = State.getInstance(this);
         connection = new DBConnection(this);
+
+        int zekr_count = getIntent().getIntExtra("count",0);
+        txt_count.setText(String.valueOf(zekr_count));
 
         boolean isDark = state.getState();
         if (isDark) {
@@ -124,15 +126,8 @@ public class Sebha extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isNetworkAvailable()) {
-                    UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()));
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(Sebha.this, Tarteeb.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }, 500);
+                    UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()),
+                            false);
                 } else {
                     tools.Message("عذرًا لا يمكنك معرفة الترتيبات إلا في وجود اتصال بالانترنت");
                 }
@@ -205,7 +200,7 @@ public class Sebha extends AppCompatActivity {
         });
     }
 
-    private void UpdateData(String uid, int count) {
+    private void UpdateData(String uid, int count,boolean backPressed) {
         if (isNetworkAvailable()) {
             DatabaseReference reference = FirebaseDatabase.getInstance()
                     .getReference("Database").child("Users");
@@ -226,6 +221,17 @@ public class Sebha extends AppCompatActivity {
                             user.put("count", count);
                             reference.child(uid).updateChildren(user);
                         }
+                    }
+                    if (!backPressed) {
+                        Intent intent = new Intent(Sebha.this, Tarteeb.class);
+                        intent.putExtra("count",Integer.parseInt(txt_count.getText()
+                                .toString()));
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(Sebha.this, Home_Activity.class);
+                        startActivity(intent);
+                        finish();
                     }
                 }
 
@@ -314,7 +320,7 @@ public class Sebha extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (BackClicked == 0) {
+        /*if (BackClicked == 0) {
             String UID = state.GetUID();
             //UpdateData(UID);
             UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()));
@@ -325,7 +331,9 @@ public class Sebha extends AppCompatActivity {
             Intent intent = new Intent(this, Home_Activity.class);
             startActivity(intent);
             finish();
-        }
+        }*/
+        String UID = state.GetUID();
+        UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()),true);
     }
 
     @Override
