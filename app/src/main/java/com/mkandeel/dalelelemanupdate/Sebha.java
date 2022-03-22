@@ -48,6 +48,7 @@ public class Sebha extends AppCompatActivity {
     private State state;
     private int OldCount;
     private DBConnection connection;
+    private int BackClicked = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,10 +229,6 @@ public class Sebha extends AppCompatActivity {
                                 .toString()));
                         startActivity(intent);
                         finish();
-                    } else {
-                        Intent intent = new Intent(Sebha.this, Home_Activity.class);
-                        startActivity(intent);
-                        finish();
                     }
                 }
 
@@ -320,8 +317,18 @@ public class Sebha extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        String UID = state.GetUID();
-        UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()),true);
+        if (BackClicked == 0) {
+            String UID = state.GetUID();
+            //UpdateData(UID);
+            UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()),true);
+            tools.Message("برجاء الضغط مرة اخرى للرجوع");
+            BackClicked++;
+        } else {
+            super.onBackPressed();
+            Intent intent = new Intent(this, Home_Activity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
