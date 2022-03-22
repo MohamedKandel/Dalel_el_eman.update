@@ -138,12 +138,12 @@ public class praying_time extends AppCompatActivity {
                 txt_isha, txt_isha_ar, txt_isha_en);
         tools.ChangeFont("calibri.ttf", txt_day, txt_hijri, txt_remain, txt_date);
 
-        
+
         CountryCity = connection.GetCountryAndCity();
         String[] arr = CountryCity.split("\n");
 
         times = connection.GetTimes();
-        
+
         //if DB found in local storage
         if (times.size() > 0) {
             //Get Current Date (Today)
@@ -157,7 +157,7 @@ public class praying_time extends AppCompatActivity {
             //if user change his location
             if (connection.GetCountryAndCity().equals(connection.GetCountryCityFromPT())) {
                 //if GetNext method Return ""
-                if (tools.GetNext(tools.GetTime(), times_Copy).trim().equals("")) {
+                if (tools.GetNext(tools.GetTime(), times_Copy,false).trim().equals("")) {
                     //Fetch Data for Tomorrow from API and send update as true
                     //use UpdateRemaining to claculate remaining from new time list
                     Day = tools.Today(false);
@@ -236,7 +236,7 @@ public class praying_time extends AppCompatActivity {
                         txt_asr.setText(tools.Format(times.get(5)));
                         txt_mag.setText(tools.Format(times.get(6)));
                         txt_isha.setText(tools.Format(times.get(7)));
-                        
+
                         time = new ArrayList<>();
 
                         for (int i = 0; i < times_Copy.size(); i++) {
@@ -275,7 +275,7 @@ public class praying_time extends AppCompatActivity {
                         txt_asr.setText(tools.Format(times.get(5)));
                         txt_mag.setText(tools.Format(times.get(6)));
                         txt_isha.setText(tools.Format(times.get(7)));
-                        
+
                         time = new ArrayList<>();
 
                         for (int i = 0; i < times_Copy.size(); i++) {
@@ -290,7 +290,7 @@ public class praying_time extends AppCompatActivity {
                             intent.putExtra("update",true);
                             ContextCompat.startForegroundService(this, intent);
                         }
-                        
+
                         updateTextView();
 
                         tools.Message("From DB (TOMORROW)");
@@ -424,7 +424,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove hijri
 
                         setNextAndRemain(times_Copy,update);
-                        if (!tools.UpdateRemain(tools.GetTime(), times_Copy).equals("Tomorrow")) {
+                        if (!tools.UpdateRemain(tools.GetTime(), times_Copy,update).equals("Tomorrow")) {
                             time = new ArrayList<>();
                             for (int i = 0; i < times_Copy.size(); i++) {
                                 time.add(new Time(Integer.parseInt(tools.GetHoursAndMin(times_Copy.get(i))[0]),
@@ -522,15 +522,15 @@ public class praying_time extends AppCompatActivity {
 
     //use this method to set Next and remaining time
     private void setNextAndRemain(List<String> times_Copy, boolean update) {
-        String rem = tools.UpdateRemain(tools.GetTime(), times_Copy);
+        String rem = tools.UpdateRemain(tools.GetTime(), times_Copy,update);
         txt_remain.setText(rem);
 
-        START_TIME_IN_MILLIS = tools.GetMillis(tools.UpdateRemain(tools.GetTime(), times_Copy));
+        START_TIME_IN_MILLIS = tools.GetMillis(tools.UpdateRemain(tools.GetTime(), times_Copy,update));
         Time_Left = START_TIME_IN_MILLIS;
 
         startTimer();
 
-        String next = tools.GetNext(tools.GetTime(), times_Copy);
+        String next = tools.GetNext(tools.GetTime(), times_Copy,update);
         if (next.trim().equals("")) {
             txt_salah.setText("Remaining for Fajr prayer");
         } else {
