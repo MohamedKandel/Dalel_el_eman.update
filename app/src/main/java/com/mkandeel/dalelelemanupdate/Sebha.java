@@ -320,18 +320,6 @@ public class Sebha extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        /*if (BackClicked == 0) {
-            String UID = state.GetUID();
-            //UpdateData(UID);
-            UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()));
-            tools.Message("برجاء الضغط مرة اخرى للرجوع");
-            BackClicked++;
-        } else {
-            super.onBackPressed();
-            Intent intent = new Intent(this, Home_Activity.class);
-            startActivity(intent);
-            finish();
-        }*/
         String UID = state.GetUID();
         UpdateData(UID, Integer.parseInt(txt_count.getText().toString().trim()),true);
     }
