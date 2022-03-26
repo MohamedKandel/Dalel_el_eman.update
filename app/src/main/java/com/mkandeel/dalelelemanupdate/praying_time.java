@@ -33,8 +33,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.mkandeel.dalelelemanupdate.HelperClasses.AlarmService;
 import com.mkandeel.dalelelemanupdate.HelperClasses.DBConnection;
+import com.mkandeel.dalelelemanupdate.HelperClasses.PlayService;
 import com.mkandeel.dalelelemanupdate.HelperClasses.State;
 import com.mkandeel.dalelelemanupdate.HelperClasses.Time;
 import com.mkandeel.dalelelemanupdate.HelperClasses.Tools;
@@ -45,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class praying_time extends AppCompatActivity {
 
@@ -87,6 +94,32 @@ public class praying_time extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        RunAd();
+
+        Log.d("Version", tools.GetAppVersion());
+
+        if (!tools.GetAppVersion().trim().equals("2.0.1")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("تحديث");
+            builder.setMessage("هناك تحديث لإصلاح بعض المشاكل التقنية في التطبيق ونتمنى منك تحديث التطبيق لحل هذه المشكلات" + "\n" +
+                    "نتشرف باستخدامك تطبيقنا دائمًا");
+            builder.setPositiveButton("تحديث", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    tools.OpenGooglePlay("com.mkandeel.dalelelemanupdate");
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("تجاهل", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.setCancelable(false);
+            builder.show();
         }
 
         boolean isAvailable = tools.isPackageAvailable("dalel.el_eman");
@@ -157,7 +190,7 @@ public class praying_time extends AppCompatActivity {
             //if user change his location
             if (connection.GetCountryAndCity().equals(connection.GetCountryCityFromPT())) {
                 //if GetNext method Return ""
-                if (tools.GetNext(tools.GetTime(), times_Copy, false).trim().equals("")) {
+                if (tools.GetNext(tools.GetTime(), times_Copy).trim().equals("")) {
                     //Fetch Data for Tomorrow from API and send update as true
                     //use UpdateRemaining to claculate remaining from new time list
                     Day = tools.Today(false);
@@ -197,7 +230,7 @@ public class praying_time extends AppCompatActivity {
                         updateTextView();
 
                         Log.d("Note", "From DB(TOMORROW)");
-                        tools.Message("From DB(TOMORROW)");
+                        //tools.Message("From DB(TOMORROW)");
 
                     } else {
                         if (isNetworkAvailable()) {
@@ -207,7 +240,7 @@ public class praying_time extends AppCompatActivity {
                                     + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
                             JSONParse(URL, Day, true);
 
-                            tools.Message("From API (TOMORROW)");
+                            //tools.Message("From API (TOMORROW)");
                             Log.d("Note", "From API (TOMORROW)");
                         } else {
                             tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
@@ -252,7 +285,7 @@ public class praying_time extends AppCompatActivity {
 
                         updateTextView();
 
-                        tools.Message("From DB (TODAY)");
+                        //tools.Message("From DB (TODAY)");
                         Log.d("Note", "From DB (TODAY)");
                     }
                     //if Tomorrow = Date in local storage
@@ -266,7 +299,7 @@ public class praying_time extends AppCompatActivity {
                         times_Copy.remove(0);       //remove date
                         times_Copy.remove(2);       //remove sunrise
                         times_Copy.remove(0);       //remove hijri
-                        setNextAndRemain(times_Copy, true);
+                        setNextAndRemain(times_Copy, false);
 
                         txt_hijri.setText(tools.FormatHijri(times.get(1)));
                         txt_fajr.setText(tools.Format(times.get(2)));
@@ -293,7 +326,7 @@ public class praying_time extends AppCompatActivity {
 
                         updateTextView();
 
-                        tools.Message("From DB (TOMORROW)");
+                        //tools.Message("From DB (TOMORROW)");
                         Log.d("Note", "From DB (TOMORROW)");
                     }
                     //else fetch new Data from API with Date and send update as false
@@ -306,7 +339,7 @@ public class praying_time extends AppCompatActivity {
                                     + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
                             JSONParse(URL, Day, false);
 
-                            tools.Message("More days before opening application");
+                            //tools.Message("More days before opening application");
                             Log.d("Note", "More days before opening application");
                         } else {
                             tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
@@ -321,7 +354,7 @@ public class praying_time extends AppCompatActivity {
                     URL = "http://api.aladhan.com/v1/timingsByCity/" + Day + "?country="
                             + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
                     JSONParse(URL, Day, false);
-                    tools.Message("no DB found");
+                    //tools.Message("no DB found");
                     Log.d("Note", "Change Location");
                 } else {
                     tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
@@ -340,7 +373,7 @@ public class praying_time extends AppCompatActivity {
                         + arr[0] + "&city=" + arr[1] + "&method=" + state.getMethod();
 
                 JSONParse(URL, Day, false);
-                tools.Message("no DB found");
+                //tools.Message("no DB found");
                 Log.d("Note", "no DB found");
             } else {
                 tools.Message("عذرًا لا يوجد اتصال بالانترنت ... تأكد من اتصالك بالانترنت");
@@ -406,6 +439,31 @@ public class praying_time extends AppCompatActivity {
 
                             if (connection.GetTimes().size() > 0) {
                                 connection.DeleteTimes();
+                            } else {
+                                if (tools.GetMillisHoursAndMin(tools.GetTime()) >
+                                        tools.GetMillisHoursAndMin(isha)) {
+                                    txt_salah.setText("Remaining for Fajr prayer");
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(praying_time.this);
+                                    builder.setTitle("تنبيه");
+                                    builder.setMessage("برجاء فتح التطبيق مرة اخرى لإعادة ضبط مواقيت الصلاة");
+                                    builder.setCancelable(false);
+                                    builder.setPositiveButton("اعادة تشغيل", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            finishAffinity();
+                                            startActivity(new Intent(praying_time.this, MainActivity.class));
+                                        }
+                                    });
+                                    builder.setNegativeButton("تجاهل", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                    //tools.Message("برجاء فتح التطبيق مرة اخرى لإعادة ضبط مواقيت الصلاة");
+                                }
                             }
                             connection.InsertPraying(1, Date, hijri_date, fajr, sun,
                                     duhr, asr, mag, isha, CountryCity.split("\n")[0],
@@ -527,8 +585,15 @@ public class praying_time extends AppCompatActivity {
 
         startTimer();
 
-        String next = tools.GetNext(tools.GetTime(), times_Copy, update);
-        int index = times_Copy.indexOf(next);
+        String next = tools.GetNext(tools.GetTime(), times_Copy);
+        int index;
+        if (update) {
+            index = 0;
+            Log.d("index PT(if)", "" + index);
+        } else {
+            index = times_Copy.indexOf(next);
+            Log.d("index PT(else)", "" + index);
+        }
         switch (index) {
             case 0:     //fajr
                 txt_salah.setText("Remaining for Fajr prayer");
@@ -580,5 +645,18 @@ public class praying_time extends AppCompatActivity {
         int minute = minutes % 60;
         String time = String.format("%02d : %02d", hours, minute);
         return time;
+    }
+
+    private void RunAd() {
+        AdView adview;
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        adview = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adview.loadAd(adRequest);
     }
 }
