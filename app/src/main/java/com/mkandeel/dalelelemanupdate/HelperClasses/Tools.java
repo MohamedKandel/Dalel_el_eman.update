@@ -213,56 +213,52 @@ public class Tools {
 
     //return "" if no next time and time if there is next time found
     @SuppressLint("SimpleDateFormat")
-    public String GetNext(String time, List<String> times,boolean update) {
+    public String GetNext(String time, List<String> times) {
         String Next = "";
-        if (!update) {
-            Map<String, Long> diffs = new LinkedHashMap<>();
 
-            long mMillis;
-            try {
-                Date mdate = new SimpleDateFormat("HH:mm").parse(time);
-                assert mdate != null;
-                mMillis = mdate.getTime();
-                for (String t : times) {
-                    Date date = new SimpleDateFormat("HH:mm").parse(t);
-                    assert date != null;
-                    long millis = date.getTime();
-                    long diff = millis - mMillis;
+        Map<String, Long> diffs = new LinkedHashMap<>();
 
-                    diffs.put(t, diff);
-                }
-            } catch (Exception e) {
-                System.out.println("From GetNext " + e.getMessage());
-                Log.d("GetNext", Objects.requireNonNull(e.getMessage()));
-            }
-            ArrayList<Long> list = new ArrayList<>();
-            for (Map.Entry<String, Long> entry : diffs.entrySet()) {
-                if (entry.getValue() > 0) {
-                    list.add(entry.getValue());
-                }
-            }
+        long mMillis;
+        try {
+            Date mdate = new SimpleDateFormat("HH:mm").parse(time);
+            assert mdate != null;
+            mMillis = mdate.getTime();
+            for (String t : times) {
+                Date date = new SimpleDateFormat("HH:mm").parse(t);
+                assert date != null;
+                long millis = date.getTime();
+                long diff = millis - mMillis;
 
-            if (list.size() > 0) {
-                long min = GetMin(list);
-                for (Map.Entry<String, Long> entry : diffs.entrySet()) {
-                    if (entry.getValue() == min) {
-                        Next = entry.getKey();
-                    }
-                }
-            } else {
-                Next = "";
+                diffs.put(t, diff);
             }
-        } else {
-            Next = times.get(0);
+        } catch (Exception e) {
+            System.out.println("From GetNext " + e.getMessage());
+            Log.d("GetNext", Objects.requireNonNull(e.getMessage()));
+        }
+        ArrayList<Long> list = new ArrayList<>();
+        for (Map.Entry<String, Long> entry : diffs.entrySet()) {
+            if (entry.getValue() > 0) {
+                list.add(entry.getValue());
+            }
         }
 
+        if (list.size() > 0) {
+            long min = GetMin(list);
+            for (Map.Entry<String, Long> entry : diffs.entrySet()) {
+                if (entry.getValue() == min) {
+                    Next = entry.getKey();
+                }
+            }
+        } else {
+            Next = "";
+        }
         return Next;
     }
 
     //return tomorrow if time after isha prayer
-    public String Remain(String time, List<String> times,boolean update) {
+    public String Remain(String time, List<String> times) {
         String remain = "Tomorrow";
-        String Next = GetNext(time, times,update);
+        String Next = GetNext(time, times);
         System.out.println("Next from Remain " + Next);
         try {
             if (Next.trim().equals("")) {
@@ -278,10 +274,10 @@ public class Tools {
     }
 
     // calculate difference between current time and TOMORROW Fajr prayer
-    public String UpdateRemain(String time, List<String> times,boolean update) {
-        String Remain = Remain(time, times,update);
+    public String UpdateRemain(String time, List<String> times, boolean update) {
+        String Remain = Remain(time, times);
         String r;
-        if (Remain.trim().equals("Tomorrow")) {
+        if (update || Remain.trim().equals("Tomorrow")) {
             List<String> times_2 = new ArrayList<>(times);
 
             String fajr = times.get(0);
@@ -673,6 +669,15 @@ public class Tools {
         int minutes = Integer.parseInt(arr[1]);
         int seconds = Integer.parseInt(arr[2]);
         millis = (Hours * 3600000L) + (minutes * 60000L) + (seconds * 1000L);
+        return millis;
+    }
+
+    public long GetMillisHoursAndMin(String time) {
+        String[] arr = time.trim().split(":");
+        long millis;
+        int Hours = Integer.parseInt(arr[0]);
+        int minutes = Integer.parseInt(arr[1]);
+        millis = (Hours * 3600000L) + (minutes * 60000L);
         return millis;
     }
 
@@ -1103,5 +1108,30 @@ public class Tools {
         } else {
             return result;
         }
+    }
+
+    public String GetAppVersion() {
+        String version;
+        PackageManager manager = context.getPackageManager();
+        try {
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            version = info.versionName;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            version = "Error 0.0.0";
+        }
+        return GetVersionCode(version);
+    }
+
+    private String GetVersionCode(String version) {
+        StringBuilder value = new StringBuilder();
+        char[] chars = version.toCharArray();
+        for (char c : chars) {
+            if (c == '.' || c == '0' || c == '1' || c == '2' || c == '3' || c == '4' ||
+                    c == '5' || c == '6' || c == '7' || c == '8' || c == '9') {
+                value.append(c);
+            }
+        }
+        return value.toString();
     }
 }
